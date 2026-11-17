@@ -1,12 +1,84 @@
 import sys
 import time
 
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.live import Live
-from rich.prompt import IntPrompt
-from rich import box
+try:
+    from rich.console import Console
+    from rich.table import Table
+    from rich.panel import Panel
+    from rich.live import Live
+    from rich.prompt import IntPrompt
+    from rich import box
+except ModuleNotFoundError as exc:
+    if exc.name != "rich":
+        raise
+
+    import re
+
+    class _Box:
+        SIMPLE = ROUNDED = None
+
+    class Console:
+        size = type("Size", (), {"height": 24})()
+
+        @staticmethod
+        def _plain(value):
+            return re.sub(r"\[/?[^\]]+\]", "", str(value))
+
+        def print(self, value=""):
+            print(self._plain(value))
+
+        def rule(self, title=""):
+            print(f"\n--- {self._plain(title)} ---")
+
+    class Table:
+        def __init__(self, title=None, **_kwargs):
+            self.title = title
+            self.rows = []
+
+        def add_column(self, *_args, **_kwargs):
+            pass
+
+        def add_row(self, *values):
+            self.rows.append(values)
+
+        def __str__(self):
+            lines = [self.title] if self.title else []
+            lines.extend(" | ".join(str(value) for value in row) for row in self.rows)
+            return "\n".join(lines)
+
+    class Panel:
+        def __init__(self, value, title=None, subtitle=None, **_kwargs):
+            self.value = value
+            self.title = title
+            self.subtitle = subtitle
+
+        def __str__(self):
+            parts = [self.title] if self.title else []
+            parts.append(str(self.value))
+            if self.subtitle:
+                parts.append(self.subtitle)
+            return "\n".join(parts)
+
+    class Live:
+        def __init__(self, renderable, **_kwargs):
+            self.renderable = renderable
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def update(self, renderable, **_kwargs):
+            self.renderable = renderable
+
+    class IntPrompt:
+        @staticmethod
+        def ask(prompt, default=None):
+            answer = input(f"{prompt} [{default}]: ")
+            return int(answer) if answer else default
+
+    box = _Box()
 
 console = Console()
 
