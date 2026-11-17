@@ -2,34 +2,30 @@
 
 <img src="resources/logo.png" alt="HardView Logo" width="750"/>
 
-# HardView Universal - Hardware Information Project (Linux & Windows)
+# HardView Universal — Hardware Information & Real-Time Monitoring for All Devices
 
 <p align="center">
   <a href="https://pypi.org/project/HardView/">
-    <img src="https://img.shields.io/badge/PyPI-Stable%203.3.1-22C55E?logo=pypi&logoColor=white" alt="PyPI Stable" height="28">
-  </a>
-  <a href="https://pypi.org/project/HardView/4.0.0b1/">
-    <img src="https://img.shields.io/badge/PyPI-Beta%204.0.0b1-22C55E?logo=pypi&logoColor=white" alt="PyPI Beta" height="28">
+    <img src="https://img.shields.io/badge/PyPI-Stable%204.0.0-22C55E?logo=pypi&logoColor=white" alt="PyPI Stable" height="28">
   </a>
   <a href="https://docs.python.org/3/">
     <img src="https://img.shields.io/badge/Python-3.8%2B-22C55E?logo=python&logoColor=white" alt="Python 3.8+" height="28">
   </a>
-  <a href="https://gafoo173.github.io/HardView/">
-    <img src="https://img.shields.io/badge/Docs-GitHub%20Pages-22C55E?logo=github&logoColor=white" alt="Documentation" height="28">
-  </a>
-  <a href="https://github.com/gafoo173/HardView/blob/main/LICENSE">
+  <a href="https://github.com/Suraset-Khurasee/Uni-Hard/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-22C55E?logo=open-source-initiative&logoColor=white" alt="MIT License" height="28">
   </a>
 </p>
 
-<p>
-  <img src="https://img.shields.io/badge/Windows-Full%20Support-3b4455" alt="Windows Full Support" height="28">
+<p align="center">
+  <img src="https://img.shields.io/badge/Windows-Full%20Support-3b4455?logo=windows&logoColor=white" alt="Windows Full Support" height="28">
   <img src="https://img.shields.io/badge/Linux-Full%20Support-3b4455?logo=linux&logoColor=white" alt="Linux Full Support" height="28">
-  <img src="https://img.shields.io/badge/Sensors-Windows%20%7C%20Linux-3b4455" alt="Sensors Monitoring" height="28">
+  <img src="https://img.shields.io/badge/Architecture-x86__64%20%7C%20ARM64-3b4455" alt="Universal Architecture Support" height="28">
+  <img src="https://img.shields.io/badge/Sensors-All%20Devices-3b4455" alt="All Devices Sensors Monitoring" height="28">
+</p>
 
 <p align="center">
-  <b>A comprehensive hardware monitoring solution with Python, C++, and C libraries</b><br>
-  <i>Unified interface for developers • Real-time monitoring • Cross-platform support</i>
+  <b>A universal, cross-platform hardware monitoring solution in Python, C++, and C</b><br>
+  <i>Unified developer API • Real-time sensors • Native SMBIOS, SMART, GPU & Process inspection on all devices</i>
 </p>
 
 </div>
@@ -63,8 +59,8 @@ python quick_start.py
 Or clone the repository and install HardView locally:
 
 ```bash
-git clone https://github.com/gafoo173/HardView.git
-cd HardView
+git clone https://github.com/Suraset-Khurasee/Uni-Hard.git
+cd Uni-Hard
 pip install .
 python tests/quick_start.py
 ```
@@ -1470,9 +1466,9 @@ All documentation is in the `docs/` folder:
 </details>
 
 <details>
-<summary><b>Process Module (Experimental 4.0.0+)</b></summary>
+<summary><b>Process Module (Universal Cross-Platform)</b></summary>
 
-<i>Windows Only</i> — wraps <code>ProcessControl</code> for opening, inspecting, and controlling a running process (memory, priority, modules, suspend/resume, PEB command line, etc.).
+<i>Cross-Platform (Linux & Windows)</i> — wraps native process controls (`ProcessControl` on Windows, `/proc/<pid>` & `process_vm_readv` on Linux) for opening, inspecting, and controlling a running process (memory, priority, modules, suspend/resume, PEB/cmdline, etc.).
 
 ### Main Classes
 
@@ -1749,8 +1745,8 @@ All documentation is in the `docs/` folder:
 </tr>
 
 <tr>
-<td><code>get_cpu_info()</code> <i>(Windows Only)</i></td>
-<td><code>get_cpu_info_objects()</code> <i>(Windows Only)</i></td>
+<td><code>get_cpu_info()</code></td>
+<td><code>get_cpu_info_objects()</code></td>
 <td>Processor details</td>
 </tr>
 
@@ -1761,8 +1757,8 @@ All documentation is in the `docs/` folder:
 </tr>
 
 <tr>
-<td><code>get_gpu_info()</code> <i>(Windows Only)</i></td>
-<td><code>get_gpu_info_objects()</code> <i>(Windows Only)</i></td>
+<td><code>get_gpu_info()</code></td>
+<td><code>get_gpu_info_objects()</code></td>
 <td>GPU information</td>
 </tr>
 
@@ -1870,21 +1866,22 @@ classDiagram
 
 <div align="center">
 
-| Feature | Windows | Linux |
-|:--|:--:|:--:|
-| BIOS Info | Yes | Yes |
-| System Info | Yes | Yes |
-| Baseboard Info | Yes | Yes |
-| Chassis Info | Yes | Yes |
-| CPU Info | Yes | Yes (by LiveView) |
-| RAM Info | Yes | Yes |
-| Disks | Yes | Yes |
-| Network | Yes | Yes |
-| SMBIOS | Yes | No |
-| PCI | Yes | No |
-| Advanced Storage / SMART | Yes | No |
-| Performance Monitoring | Yes | Yes |
-| Sensors | Yes (by LiveView) | Yes (by LiveView) |
+| Feature | Windows | Linux | macOS / POSIX |
+|:--|:--:|:--:|:--:|
+| BIOS Info | Yes | Yes | Yes |
+| System Info | Yes | Yes | Yes |
+| Baseboard Info | Yes | Yes | Yes |
+| Chassis Info | Yes | Yes | Yes |
+| CPU Info | Yes | Yes | Yes |
+| RAM Info | Yes | Yes | Yes |
+| Disks & Partitions | Yes | Yes | Yes |
+| Network Adapters | Yes | Yes | Yes |
+| Native SMBIOS | Yes | Yes | Yes (Fallback) |
+| PCI Devices | Yes | Yes | Yes |
+| SMART Drive Health | Yes | Yes | Yes (Fallback) |
+| Process Inspection | Yes | Yes | Yes |
+| Real-Time Performance | Yes | Yes | Yes |
+| Hardware Sensors | Yes (LiveView) | Yes (LiveView) | Yes (LiveView) |
 
 </div>
 
