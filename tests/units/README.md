@@ -46,6 +46,7 @@ python PyLiveRam.py
   ```bash
   sudo apt-get install lm-sensors libsensors4-dev  # Ubuntu/Debian
   sudo yum install lm_sensors lm_sensors-devel     # CentOS/RHEL
+  sudo pacman -S lm_sensors                        # Arch Linux
   ```
 
 ## Notes

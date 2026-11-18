@@ -21,12 +21,8 @@
 #include "cpuid.hpp"
 #include <cstring> // For memcpy
 
-// Handle differences between compilers
-#if defined(_MSC_VER)
-#include <intrin.h> // For __cpuidex
-#else
-#include <cpuid.h>  // For __cpuid_count
-#endif
+// Compiler intrinsics (<intrin.h> / <cpuid.h>) come from cpuid.hpp.
+// Including <cpuid.h> twice breaks GCC <= 10, whose header has no include guard.
 namespace cpuid{
 namespace helpers{
 /**

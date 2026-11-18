@@ -105,7 +105,7 @@ def test_pylinux_sensor():
     except ImportError as e:
         print_error(f"Failed to import PyLinuxSensor: {e}")
         print_info("Note: PyLinuxSensor requires lm-sensors library to be installed")
-        print_info("Install with: sudo apt-get install lm-sensors libsensors4-dev")
+        print_info("Install with: sudo pacman -S lm_sensors (Arch) or sudo apt-get install lm-sensors libsensors4-dev (Debian/Ubuntu)")
     except Exception as e:
         print_error(f"PyLinuxSensor test failed: {e}")
         print_info("Note: Linux sensor monitoring requires lm-sensors and proper hardware support")

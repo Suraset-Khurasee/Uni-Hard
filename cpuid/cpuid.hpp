@@ -42,8 +42,9 @@
 
 #if defined(_MSC_VER)
 #include <intrin.h>
-#else
+#elif defined(__i386__) || defined(__x86_64__)
 #include <cpuid.h>
+#define CPUID_HPP_HAS_X86_CPUID 1
 #endif
 
 namespace cpuid {
@@ -76,12 +77,17 @@ enum class Feature : uint64_t {
 inline void do_cpuid(int regs[4], int leaf, int subleaf = 0) {
 #if defined(_MSC_VER)
   __cpuidex(regs, leaf, subleaf);
-#else
+#elif defined(CPUID_HPP_HAS_X86_CPUID)
   __cpuid_count(leaf, subleaf,
                 reinterpret_cast<unsigned int &>(regs[0]),
                 reinterpret_cast<unsigned int &>(regs[1]),
                 reinterpret_cast<unsigned int &>(regs[2]),
                 reinterpret_cast<unsigned int &>(regs[3]));
+#else
+  // CPUID is an x86-only instruction (e.g. ARM64 has no equivalent).
+  (void)leaf;
+  (void)subleaf;
+  regs[0] = regs[1] = regs[2] = regs[3] = 0;
 #endif
 }
 

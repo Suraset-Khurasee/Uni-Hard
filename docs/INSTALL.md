@@ -9,34 +9,89 @@ This document explains how to install the HardView library on supported platform
 - **Windows:**
   - 32-bit and 64-bit (x86, x86_64)
 - **Linux:**
-  - 32-bit and 64-bit (x86, x86_64)
+  - x86_64 and ARM64, built from source
+  - Ubuntu 20.04, 22.04, 24.04, 26.04 (primary target)
+  - Arch Linux, Fedora/RHEL, openSUSE
 
 > **Note:**
-> - Prebuilt wheels are provided for the above platforms and for multiple Python versions (see PyPI for details).
-> - **Not supported:** Arch Linux, Android, and macOS. There is no native code or wheel support for these systems, as HardView does not implement platform-specific code for them.
+> - `pip install hardview` from PyPI installs the upstream HardView project,
+>   not this fork. Install from this repository as shown below.
+> - On Linux, pip builds the native extensions locally, so a C/C++ compiler
+>   and the Python development headers are required.
 
 ---
 
 ## Installation Methods
 
-### 1. Install from PyPI (Recommended)
+### 1. Install script (Recommended on Linux)
 
-The easiest way to install HardView is via pip from the Python Package Index (PyPI):
-
-```bash
-pip install hardview
-```
-
-This will automatically download the correct prebuilt wheel for your platform and Python version (if available).
-
-### 2. Install from Source
-
-If you want to build HardView yourself (for development or unsupported Python versions):
+`install.sh` installs the system build dependencies with your package manager
+(`apt`, `pacman`, `dnf`, or `zypper`), creates `./.venv`, builds HardView, and
+runs a smoke test:
 
 ```bash
-git clone https://github.com/gafoo173/hardview.git
-cd hardview
-pip install .
+git clone https://github.com/Suraset-Khurasee/Uni-Hard.git
+cd Uni-Hard
+./install.sh
 ```
 
-This will build the extension from source using your system's compiler.
+Options: `--no-system` (skip the package manager step), `--venv DIR`,
+`--editable`.
+
+### 2. Manual install on Ubuntu / Debian
+
+Ubuntu does not ship a compiler, Python headers, or `venv` support by default,
+and the interpreter is `python3` (there is no `python` command):
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git python3 python3-venv python3-pip python3-dev \
+  build-essential libsensors-dev lm-sensors
+git clone https://github.com/Suraset-Khurasee/Uni-Hard.git
+cd Uni-Hard
+python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install .
+```
+
+Ubuntu 23.04+ marks the system Python as externally managed, so install into
+a virtual environment rather than with system-wide `pip`.
+
+### 3. Manual install on Arch Linux
+
+```bash
+sudo pacman -S --needed base-devel git python python-pip lm_sensors
+git clone https://github.com/Suraset-Khurasee/Uni-Hard.git
+cd Uni-Hard
+python -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install .
+```
+
+For an Arch package installation, use the repository `PKGBUILD`:
+
+```bash
+sudo pacman -S --needed base-devel git python python-pybind11 python-build \
+  python-installer python-setuptools python-wheel python-rich
+makepkg -si
+```
+
+### 4. Windows
+
+```powershell
+git clone https://github.com/Suraset-Khurasee/Uni-Hard.git
+cd Uni-Hard
+python -m venv .venv
+.venv\Scripts\python -m pip install .
+```
+
+---
+
+## Root access on Linux
+
+CPU, RAM, sensor, and usage APIs work as a normal user. Raw SMBIOS tables and
+SMART/NVMe queries are root-only on Linux:
+
+```bash
+sudo .venv/bin/python tests/quick_start.py
+```

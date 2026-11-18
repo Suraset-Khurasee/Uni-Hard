@@ -24,6 +24,63 @@ def _has_libsensors():
 HAS_LIBSENSORS = _has_libsensors()
 
 # =================================================================
+# ==      Helper: Fail early with actionable Linux build errors  ==
+# =================================================================
+
+_LINUX_BUILD_DEPS = {
+    'apt-get': 'sudo apt-get install -y build-essential python3-dev python3-venv libsensors-dev',
+    'pacman': 'sudo pacman -S --needed base-devel python lm_sensors',
+    'dnf': 'sudo dnf install -y gcc gcc-c++ make python3-devel lm_sensors-devel',
+    'zypper': 'sudo zypper install -y gcc gcc-c++ make python3-devel libsensors4-devel',
+}
+
+
+def _linux_install_hint():
+    for manager, command in _LINUX_BUILD_DEPS.items():
+        if shutil.which(manager):
+            return command
+    return '\n    '.join(_LINUX_BUILD_DEPS.values())
+
+
+def _check_linux_build_prerequisites():
+    """Explain missing system packages instead of a cryptic compiler error."""
+    if not sys.platform.startswith('linux'):
+        return
+
+    import sysconfig
+
+    problems = []
+    cc = (sysconfig.get_config_var('CC') or 'cc').split()[0]
+    cxx = (sysconfig.get_config_var('CXX') or 'c++').split()[0]
+    cc = os.environ.get('CC', cc).split()[0]
+    cxx = os.environ.get('CXX', cxx).split()[0]
+    if not shutil.which(cc):
+        problems.append(f'C compiler "{cc}" was not found')
+    if not shutil.which(cxx):
+        problems.append(f'C++ compiler "{cxx}" was not found')
+
+    python_h = os.path.join(sysconfig.get_paths()['include'], 'Python.h')
+    if not os.path.exists(python_h):
+        problems.append(f'Python development headers are missing ({python_h})')
+
+    if problems:
+        details = '\n  - '.join(problems)
+        raise SystemExit(
+            '\nHardView builds native extensions and needs a compiler toolchain.\n'
+            f'  - {details}\n\n'
+            'Install the build dependencies, then retry:\n'
+            f'    {_linux_install_hint()}\n\n'
+            'Or run ./install.sh from the repository root to do this automatically.\n'
+        )
+
+    if not HAS_LIBSENSORS:
+        print(
+            'NOTE: lm_sensors development headers were not found; building '
+            'HardView.LiveView with its sysfs sensor fallback. For libsensors '
+            f'support: {_linux_install_hint()}'
+        )
+
+# =================================================================
 # ==      HardView Main Extension (C)                            ==
 # =================================================================
 
@@ -208,6 +265,7 @@ class build_ext(_build_ext):
         super().build_extensions()
 
     def run(self):
+        _check_linux_build_prerequisites()
         super().run()
 
         if sys.platform.startswith('win'):
@@ -254,7 +312,7 @@ A comprehensive cross-platform Python & C/C++ library for querying low-level har
     long_description_content_type='text/markdown',
     author='gafoo',
     author_email='omarwaled3374@gmail.com',
-    url='https://github.com/gafoo173/HardView',
+    url='https://github.com/Suraset-Khurasee/Uni-Hard',
     license="MIT",
     packages=packages,
     package_dir=package_dir,
@@ -276,7 +334,8 @@ A comprehensive cross-platform Python & C/C++ library for querying low-level har
     keywords='hardware system monitoring performance cpu ram disk network gpu bios smbios smart process windows linux wmi real-time live',
     python_requires='>=3.7',
     install_requires=[
-        'pybind11>=2.6'
+        'pybind11>=2.6',
+        'rich>=13.0.0',
     ],
     extras_require={
         'dev': [
@@ -284,7 +343,7 @@ A comprehensive cross-platform Python & C/C++ library for querying low-level har
         ],
     },
     project_urls={
-        'Bug Reports': 'https://github.com/gafoo173/HardView/issues',
-        'Source': 'https://github.com/gafoo173/HardView',
+        'Bug Reports': 'https://github.com/Suraset-Khurasee/Uni-Hard/issues',
+        'Source': 'https://github.com/Suraset-Khurasee/Uni-Hard',
     },
 )

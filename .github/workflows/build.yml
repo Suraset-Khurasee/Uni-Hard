@@ -11,6 +11,8 @@ on:
       - 'HardwareWrapper/**'
       - 'cpuid/**'
       - 'setup.py'
+      - 'pyproject.toml'
+      - 'PKGBUILD'
       - '.github/workflows/build.yml'
 
   pull_request:
@@ -23,6 +25,8 @@ on:
       - 'HardwareWrapper/**'
       - 'cpuid/**'
       - 'setup.py'
+      - 'pyproject.toml'
+      - 'PKGBUILD'
       - '.github/workflows/build.yml'
 
 jobs:

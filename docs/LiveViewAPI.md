@@ -1737,6 +1737,7 @@ This script will execute various `LiveView` functions and display their outputs,
 - **lm-sensors library**: Required for `PyLinuxSensor` class.
 - **Install on Ubuntu/Debian**: `sudo apt-get install lm-sensors libsensors4-dev`
 - **Install on CentOS/RHEL**: `sudo yum install lm_sensors lm_sensors-devel`
+- **Install on Arch Linux**: `sudo pacman -S lm_sensors`
 
 ### Error Handling
 
